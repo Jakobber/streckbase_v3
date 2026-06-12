@@ -132,6 +132,12 @@ class PurchaseRepository:
         ))
         self.session.commit()
 
+    def create_charge(self, user_id: str, amount: int) -> None:
+        self.session.add(Purchase(
+            user_id=user_id, item_id=None, date=_now_json(), price=amount,
+        ))
+        self.session.commit()
+
     def delete_purchase(self, purchase_id: int) -> None:
         self.session.execute(
             text("DELETE FROM Purchases WHERE Purchases.id = :id"),

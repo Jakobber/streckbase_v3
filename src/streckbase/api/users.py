@@ -97,6 +97,17 @@ def create_repayment(user_id: str, repayment: RepaymentCreate, service: UserServ
     return {}
 
 
+@router.post("/{user_id}/charge", status_code=201)
+def create_charge(user_id: str, charge: RepaymentCreate, service: UserServiceDep) -> dict:
+    if charge.amount <= 0:
+        raise HTTPException(status_code=400)
+    try:
+        service.create_charge(user_id, charge.amount)
+    except ValueError:
+        raise HTTPException(status_code=500)
+    return {}
+
+
 @router.delete("/{user_id}/purchases/{purchase_id}", status_code=202)
 def delete_user_purchase(user_id: str, purchase_id: int, service: UserServiceDep) -> dict:
     try:

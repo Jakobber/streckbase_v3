@@ -105,6 +105,16 @@ class UserService:
         self.purchases.create_repayment(user_id, amount)
         self.users.update_debt(user_id, new_debt)
 
+    def create_charge(self, user_id: str, amount: int) -> None:
+        # Not present in v2's routes (the admin UI's charge button 404:ed) —
+        # added here so the feature works end-to-end
+        user = self.users.get_user(user_id)
+        if user is None:
+            raise ValueError("User not found")
+        new_debt = (user.get("debt") or 0) + amount
+        self.purchases.create_charge(user_id, amount)
+        self.users.update_debt(user_id, new_debt)
+
     def delete_user_purchase(self, user_id: str, purchase_id: int) -> None:
         user = self.users.get_user(user_id)
         if user is None:
